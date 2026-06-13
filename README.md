@@ -55,8 +55,9 @@ in your browser via `localStorage`:
 - If `localStorage` is unavailable (private mode, etc.), the app degrades
   gracefully to in-memory state for the session.
 
-The persistence layer lives in `lib/store/` and is intentionally isolated so its
-internals can be swapped for Supabase in Phase 3B without touching the UI.
+The persistence layer lives in `lib/store/` and is intentionally isolated: in
+Supabase Mode the same store routes to Postgres instead (Phase 3B) without any
+UI changes.
 
 ## Supabase Mode (Phase 3A foundation)
 
@@ -76,13 +77,18 @@ the local demo. To enable it:
 3. Restart `npm run dev`, then visit `/auth/sign-up`. An organization + profile
    are created automatically on first sign-up (Postgres trigger).
 
+When signed in, your projects, leads, edits, report generations, and CSV exports
+**persist to Postgres** (under RLS scoped to your organization) — the same UI,
+now backed by the cloud. On first sign-in the app offers to import any data you
+created locally.
+
 With **no** Supabase env vars the app stays in Local Demo Mode — auth pages
 still render (showing a "no account needed" card), and nothing breaks. The
 Settings page always shows the current mode, connection, and auth status.
 
-> **Phase 3A** = auth + schema + RLS foundation. **Phase 3B** wires the store to
-> Supabase so projects/leads/reports persist server-side. See
-> `docs/BUILD_PHASES.md`.
+> **Phase 3A** added auth + schema + RLS. **Phase 3B** (this build) wires the
+> store to Supabase so projects/leads/reports/exports persist server-side while
+> Local Demo Mode keeps working untouched. See `docs/BUILD_PHASES.md`.
 
 ## Light & dark themes
 
@@ -100,7 +106,7 @@ ivory**.
 app/                 # Next.js App Router routes (app shell + ivory report)
   auth/              # sign-in / sign-up / callback / sign-out (Supabase Mode)
 components/
-  app/               # command-center UI (shell, charts, leads explorer, wizard)
+  app/               # command-center UI (shell, charts, leads, wizard, migration)
   auth/              # AuthForm (email + password, demo-aware)
   report/            # ivory report UI (cover, charts, lead cards, primitives)
   ui/                # shared primitives (badges, buttons, panels)
@@ -112,20 +118,22 @@ lib/
   csv.ts             # reusable CSV export utility
   theme.ts           # theme tokens + no-flash apply
   mock-data.ts       # isolated demo seed data (clearly marked)
-  store/             # local persistence seam (swap for Supabase in 3B)
+  store/             # persistence seam — localStorage OR Supabase at runtime
     persisted.ts     #   persisted shape + seed + id/slug helpers
     storage.ts       #   safe localStorage access
-    store.ts         #   store singleton + mutations (createProject, updateLead…)
+    store.ts         #   backend orchestrator + mutations (createProject…)
+    supabaseStore.ts #   Supabase backend: domain ⇄ row mappers + queries
     useStore.ts      #   React hooks (useSyncExternalStore)
-  supabase/          # Supabase clients + app-mode detection (Phase 3A)
+  supabase/          # Supabase clients + app-mode detection
     env.ts           #   env vars + getAppMode() (local-demo | supabase)
     client.ts        #   browser client (null when unconfigured)
     server.ts        #   server client for the App Router
+    database.types.ts#   typed Database schema for the clients
     useSession.ts    #   client session hook
     bootstrap.ts     #   idempotent org/profile bootstrap fallback
-supabase/            # SQL migrations, RLS policies, seed (Phase 3A)
+supabase/            # SQL migrations, RLS policies, seed
   migrations/        #   0001_init.sql, 0002_rls.sql
-  seed.sql           #   optional demo rows
+  seed.ts            #   optional TypeScript seed (npm run seed)
 docs/                # PRODUCT_SPEC, MVP_SCOPE, DATABASE_SCHEMA, LEAD_SCORING,
                      # BUILD_PHASES, DEPLOYMENT, FUTURE_API_WORKFLOWS
 ```

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { use } from "react";
 import { useHydrated, useProject, useProjectAggregates, useProjectLeads } from "@/lib/store/useStore";
+import { recordReport } from "@/lib/store/store";
 import { ButtonLink, PageHeader, Panel, StatCard } from "@/components/ui/primitives";
 import { ScorePill, VerificationBadge } from "@/components/ui/badges";
 import { ExportCsvButton } from "@/components/app/ExportCsvButton";
@@ -25,6 +26,19 @@ export default function ReportBuilderPage({
   const included = leads.filter((l) => l.includedInReport);
   const excluded = leads.filter((l) => !l.includedInReport);
 
+  const onGenerate = () =>
+    recordReport({
+      projectId,
+      title: project.report.reportName,
+      stats: {
+        totalReviewed: leads.length,
+        strongLeads: agg.strongLeads,
+        averageScore: agg.averageScore,
+        verifiedCount: agg.verifiedCount,
+      },
+      includedLeadIds: included.map((l) => l.id),
+    });
+
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -39,7 +53,7 @@ export default function ReportBuilderPage({
             actions={
               <>
                 <ExportCsvButton leads={included} filename={`${project.report.reportName}.csv`} />
-                <ButtonLink href={`/reports/${projectId}`} variant="gold" target="_blank">
+                <ButtonLink href={`/reports/${projectId}`} variant="gold" target="_blank" onClick={onGenerate}>
                   Generate report ↗
                 </ButtonLink>
               </>
@@ -144,7 +158,7 @@ export default function ReportBuilderPage({
             current {included.length} included {included.length === 1 ? "lead" : "leads"}.
           </p>
         </div>
-        <ButtonLink href={`/reports/${projectId}`} variant="gold" target="_blank" className="shrink-0 px-5 py-3 text-base">
+        <ButtonLink href={`/reports/${projectId}`} variant="gold" target="_blank" onClick={onGenerate} className="shrink-0 px-5 py-3 text-base">
           Generate &amp; view report ↗
         </ButtonLink>
       </Panel>

@@ -59,14 +59,30 @@ env vars.
 > Phase 2A/2B — projects, leads, edits, CSV export, theme toggle, and the report
 > all work from localStorage with no login.
 
-## Phase 3B — Supabase persistence (data sync)
+## Phase 3B — Supabase persistence (data sync) ✅ (this build)
 
-- Swap `lib/store/store.ts` internals for Supabase queries **when in Supabase
-  Mode** (the hooks in `lib/store/useStore.ts` and the whole UI stay untouched);
-  keep the localStorage path for Local Demo Mode.
-- Projects/leads/reports/exports persist server-side under RLS by `org_id`.
-- Replace `supabase/seed.sql` with a TypeScript seed mirroring `lib/mock-data.ts`.
-- Migrate a browser's existing localStorage data into Supabase on first sign-in.
+The store now reads/writes Supabase when in Supabase Mode — UI untouched.
+
+- `lib/store/store.ts` is a backend orchestrator: it keeps the synchronous
+  in-memory snapshot React reads, and routes persistence to **localStorage**
+  (Local Demo Mode) or **Supabase** (configured + signed in). Mutations update
+  the cache optimistically, then write to Postgres asynchronously.
+- `lib/store/supabaseStore.ts` maps domain ⇄ rows: `Lead.evidence[]` →
+  `lead_verifications`, `breakdown` → `leads.breakdown` + a `lead_scores` row,
+  `outreach` → `outreach_angles`.
+- CSV exports insert `exports` + `usage_events`; report generation inserts
+  `reports` + `report_leads` + `usage_events`.
+- Typed `Database` (`lib/supabase/database.types.ts`) types both clients.
+- First sign-in offers to import local data into the org (`MigrationBanner`).
+- `supabase/seed.ts` (TypeScript, service role) replaces the SQL seed.
+- Backend selection is automatic and reversible (sign-out reverts to local) —
+  Local Demo Mode is unchanged when Supabase is unconfigured or signed out.
+
+## Phase 3C — Teams & polish (future)
+
+- Team invites, member roles, and per-member permissions (schema is ready).
+- Realtime sync across tabs/devices; conflict handling on concurrent edits.
+- Server-side reads for project/report pages (currently client-hydrated).
 
 ## Phase 4 — Real lead discovery APIs
 

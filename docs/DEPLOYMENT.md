@@ -67,7 +67,7 @@ The app detects its mode from env vars (`lib/supabase/env.ts`):
 | Mode | Trigger | Behavior |
 | --- | --- | --- |
 | **Local Demo Mode** | no Supabase env vars | localStorage persistence, no login, works offline. Default. |
-| **Supabase Mode** | both `NEXT_PUBLIC_SUPABASE_*` set | auth pages active; cloud data sync lands in Phase 3B. |
+| **Supabase Mode** | both `NEXT_PUBLIC_SUPABASE_*` set + signed in | auth pages active; projects/leads/reports/exports persist to Postgres under RLS. |
 
 ### Local Demo Mode (default — nothing to configure)
 
@@ -98,5 +98,6 @@ npm run dev
 On Vercel, set the same variables under **Project → Settings → Environment
 Variables**. Never expose `SUPABASE_SERVICE_ROLE_KEY` to the client.
 
-> **Phase 3B** swaps the `lib/store/` internals to read/write Supabase when in
-> Supabase Mode; until then the UI loads from localStorage in both modes.
+> In Supabase Mode the `lib/store/` orchestrator reads/writes Supabase when
+> signed in; signed-out (or unconfigured) it uses localStorage. Seed demo data
+> with `npm run seed` (needs `SUPABASE_SERVICE_ROLE_KEY`).

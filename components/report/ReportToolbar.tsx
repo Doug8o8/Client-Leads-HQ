@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Lead } from "@/lib/types";
 import { downloadCsv, leadsToCsv } from "@/lib/csv";
+import { recordExport } from "@/lib/store/store";
 
 export function ReportToolbar({
   leads,
@@ -22,7 +23,10 @@ export function ReportToolbar({
         </Link>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => downloadCsv(filename, leadsToCsv(leads))}
+            onClick={() => {
+              downloadCsv(filename, leadsToCsv(leads));
+              recordExport({ projectId: leads[0]?.projectId, rows: leads.length });
+            }}
             className="inline-flex items-center gap-1.5 rounded-lg border bg-white px-3.5 py-2 text-sm font-semibold text-[#16243f] shadow-sm transition hover:border-[#b8923c] hover:text-[#b8923c]"
             style={{ borderColor: "#e0d3ab" }}
           >

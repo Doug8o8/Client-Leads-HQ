@@ -9,9 +9,10 @@
 // =====================================================================
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import type { Database } from "./database.types";
 import { SUPABASE_ANON_KEY, SUPABASE_URL, isSupabaseConfigured } from "./env";
 
-type ServerClient = ReturnType<typeof createServerClient>;
+type ServerClient = ReturnType<typeof createServerClient<Database>>;
 
 /** The Supabase server client, or `null` in Local Demo Mode. */
 export async function getSupabaseServerClient(): Promise<ServerClient | null> {
@@ -19,7 +20,7 @@ export async function getSupabaseServerClient(): Promise<ServerClient | null> {
 
   const cookieStore = await cookies();
 
-  return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  return createServerClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

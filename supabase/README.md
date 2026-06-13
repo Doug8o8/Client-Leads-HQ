@@ -11,7 +11,7 @@ supabase/
   migrations/
     0001_init.sql   # tables, indexes, signup-bootstrap trigger, updated_at
     0002_rls.sql    # enable RLS + org-scoped policies on every table
-  seed.sql          # optional demo org/project/leads for dashboard testing
+  seed.ts           # optional TypeScript seed mirroring lib/mock-data.ts
   README.md         # this file
 ```
 
@@ -22,15 +22,30 @@ supabase/
 1. Create a project at https://supabase.com.
 2. **SQL Editor → New query** → paste `migrations/0001_init.sql` → **Run**.
 3. New query → paste `migrations/0002_rls.sql` → **Run**.
-4. (Optional) New query → paste `seed.sql` → **Run** for demo rows.
+4. (Optional) Seed demo data — see "Seeding" below.
 
 ### Option B — Supabase CLI
 
 ```bash
 supabase link --project-ref <your-ref>
 supabase db push        # applies migrations/*.sql in order
-supabase db reset       # (local) re-runs migrations + seed.sql
 ```
+
+## Seeding (optional)
+
+`supabase/seed.ts` mirrors `lib/mock-data.ts` into a fresh demo organization
+using the **service role key** (server-only — it bypasses RLS):
+
+```bash
+# with NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY in .env.local
+npm run seed
+# or explicitly:
+NEXT_PUBLIC_SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npx tsx supabase/seed.ts
+```
+
+It prints the new org id and a one-liner SQL to attach that org to your
+signed-up user. (You usually don't need this — the app's migration banner can
+import your local data after sign-in instead.)
 
 ## Get your env vars
 
@@ -70,9 +85,10 @@ See `docs/DATABASE_SCHEMA.md` for the full column reference.
 - The `service_role` key bypasses RLS — keep it server-side only, never in
   `NEXT_PUBLIC_*` and never shipped to the browser.
 
-## What's next (Phase 3B)
+## Data persistence (Phase 3B)
 
-The schema + auth exist now, but the app UI still reads/writes localStorage.
-Phase 3B swaps `lib/store/store.ts` internals to read/write these tables when
-in Supabase Mode (the React hooks and UI stay untouched). See
+When signed in, `lib/store/store.ts` reads/writes these tables (the React hooks
+and UI are untouched). Creating projects, editing leads, toggling inclusion, CSV
+exports, and report generation all persist server-side under RLS. Signed-out (or
+unconfigured) the app stays in Local Demo Mode on localStorage. See
 `docs/BUILD_PHASES.md`.

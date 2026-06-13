@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { MigrationBanner } from "@/components/app/MigrationBanner";
 import { cn } from "@/lib/utils";
 import { getAppMode } from "@/lib/supabase/env";
 
@@ -141,7 +142,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </nav>
           </header>
 
-          <main className="px-4 py-6 sm:px-6 lg:px-0 lg:py-8">{children}</main>
+          <main className="px-4 py-6 sm:px-6 lg:px-0 lg:py-8">
+            <MigrationBanner />
+            {children}
+          </main>
         </div>
       </div>
     </div>

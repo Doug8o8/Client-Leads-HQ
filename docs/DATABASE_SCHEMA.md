@@ -2,14 +2,17 @@
 
 The TypeScript source of truth for the app's runtime types is `lib/types.ts`.
 The **SQL source of truth** is `supabase/migrations/` — this doc describes those
-tables. Phase 3A ships the schema, RLS, and auth; the app UI still reads/writes
-`localStorage` until Phase 3B wires the store to these tables.
+tables. Phase 3A shipped the schema, RLS, and auth; Phase 3B wired the store
+(`lib/store/`) to read/write these tables when signed in (localStorage remains
+the fallback for Local Demo Mode).
 
 Implemented in:
 
 - `supabase/migrations/0001_init.sql` — tables, indexes, signup trigger
 - `supabase/migrations/0002_rls.sql` — RLS + org-scoped policies
-- `supabase/seed.sql` — optional demo rows
+- `supabase/seed.ts` — optional TypeScript seed (service role)
+- `lib/store/supabaseStore.ts` — domain ⇄ row mappers + queries
+- `lib/supabase/database.types.ts` — typed `Database` for the clients
 
 ## Entity relationships
 
@@ -197,7 +200,14 @@ policies**, and the `service_role` key (which bypasses RLS) is server-only.
 ## Mapping note (Phase 3B)
 
 `lib/types.ts` keeps `evidence[]`, `breakdown`, and `outreach` embedded on the
-`Lead` object. When the store is wired to Supabase (Phase 3B), those map to
-`lead_verifications`, `lead_scores`/`leads.breakdown`, and `outreach_angles`
-respectively. The jsonb columns (`breakdown`, `business/target/signals/report`,
-`stats`) keep the Phase 2↔3 migration low-risk.
+`Lead` object. The store maps these to Postgres as follows
+(`lib/store/supabaseStore.ts`):
+
+- `Lead.evidence[]` → rows in `lead_verifications`
+- `Lead.breakdown` → `leads.breakdown` (jsonb, authoritative on read) **and** a
+  `lead_scores` row (per-dimension; supports history)
+- `Lead.outreach` → a row in `outreach_angles` (latest wins on read)
+
+The jsonb columns (`breakdown`, `business/target/signals/report`, `stats`) keep
+the round-trip simple. On read, the store reassembles full `Lead`/`Project`
+objects so the UI is identical to Local Demo Mode.
