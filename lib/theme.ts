@@ -6,7 +6,7 @@
 export type Theme = "dark" | "light";
 
 export const THEME_KEY = "clhq.theme";
-export const DEFAULT_THEME: Theme = "dark";
+export const DEFAULT_THEME: Theme = "light";
 
 /** Inline script (runs before paint) that applies the saved theme with no flash. */
 export const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('${THEME_KEY}')||'${DEFAULT_THEME}';var e=document.documentElement;e.classList.remove('theme-dark','theme-light');e.classList.add('theme-'+(t==='light'?'light':'dark'));}catch(e){document.documentElement.classList.add('theme-${DEFAULT_THEME}');}})();`;
@@ -14,7 +14,8 @@ export const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('${THEME
 export function getStoredTheme(): Theme {
   try {
     const t = localStorage.getItem(THEME_KEY);
-    return t === "light" ? "light" : "dark";
+    if (t === "light" || t === "dark") return t;
+    return DEFAULT_THEME;
   } catch {
     return DEFAULT_THEME;
   }

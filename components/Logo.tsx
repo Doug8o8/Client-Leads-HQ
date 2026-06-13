@@ -14,7 +14,7 @@ export function Logo({
     <Link href={href} className={cn("group inline-flex items-center gap-3", className)}>
       <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-gold-soft to-gold-deep text-ink-950 shadow-[0_8px_24px_-8px_rgba(201,162,75,0.7)]">
         <span className="text-[13px] font-black tracking-tight">CL</span>
-        <span className="absolute -bottom-1 -right-1 grid h-4 w-4 place-items-center rounded-md bg-ink-900 text-[8px] font-bold text-gold-soft ring-1 ring-gold/40">
+        <span className="absolute -bottom-1 -right-1 grid h-4 w-4 place-items-center rounded-md bg-ink-900 text-[8px] font-bold text-accent-gold ring-1 ring-gold/40">
           HQ
         </span>
       </span>

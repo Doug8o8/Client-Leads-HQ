@@ -56,10 +56,13 @@ internals can be swapped for Supabase in Phase 3 without touching the UI.
 
 ## Light & dark themes
 
-A dark command-center theme (default) and a light executive theme are available
-via the toggle in the sidebar (and Settings). Styling is CSS-variable driven, so
-themes recolor the chrome cleanly. The **report is always ivory** — the
-reference for the premium light direction.
+A **light premium executive theme is the default** — a soft cool blue-ivory
+canvas with deep-navy text, muted gold and subtle blue accents, soft borders, and
+refined shadows. The **dark command-center theme** remains available via the
+toggle in the sidebar (and Settings); it shows a sun icon on light, a moon icon on
+dark. Styling is CSS-variable driven (including theme-aware accent + badge
+tokens), so both modes stay high-contrast and premium. The **report is always
+ivory**.
 
 ## Project structure
 

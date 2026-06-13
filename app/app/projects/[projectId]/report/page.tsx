@@ -63,12 +63,12 @@ export default function ReportBuilderPage({
             <h2 className="font-semibold text-app">
               Included <span className="text-faint">({included.length})</span>
             </h2>
-            <span className="text-xs text-emerald-300">Ships in report</span>
+            <span className="text-xs text-accent-emerald">Ships in report</span>
           </div>
           {included.length === 0 ? (
             <p className="mt-4 text-sm text-muted">
               No leads included yet. Add leads from the{" "}
-              <Link href={`/app/projects/${projectId}/leads`} className="text-electric-soft hover:underline">
+              <Link href={`/app/projects/${projectId}/leads`} className="text-accent-blue hover:underline">
                 lead review
               </Link>{" "}
               screen.
@@ -126,7 +126,7 @@ export default function ReportBuilderPage({
           )}
           <p className="mt-4 text-xs text-faint">
             Adjust inclusion from the{" "}
-            <Link href={`/app/projects/${projectId}/leads`} className="text-electric-soft hover:underline">
+            <Link href={`/app/projects/${projectId}/leads`} className="text-accent-blue hover:underline">
               lead review
             </Link>{" "}
             screen.

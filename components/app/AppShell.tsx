@@ -68,7 +68,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       : "text-muted surface-1-hover hover:text-app"
                   )}
                 >
-                  <span className={cn(active ? "text-gold-soft" : "text-faint group-hover:text-muted")}>
+                  <span className={cn(active ? "text-accent-gold" : "text-faint group-hover:text-muted")}>
                     <NavIcon name={item.icon} />
                   </span>
                   {item.label}
@@ -115,7 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     href={item.href}
                     className={cn(
                       "grid h-9 w-9 place-items-center rounded-lg",
-                      active ? "surface-1 text-gold-soft" : "text-muted"
+                      active ? "surface-1 text-accent-gold" : "text-muted"
                     )}
                   >
                     <NavIcon name={item.icon} />

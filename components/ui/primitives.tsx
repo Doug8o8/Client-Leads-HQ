@@ -30,7 +30,7 @@ export function PageHeader({
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {kicker && (
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-gold-soft">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-accent-gold">
             {kicker}
           </p>
         )}
@@ -59,11 +59,11 @@ export function StatCard({
 }) {
   const accentText =
     accent === "gold"
-      ? "text-gold-soft"
+      ? "text-accent-gold"
       : accent === "electric"
-      ? "text-electric-soft"
+      ? "text-accent-blue"
       : accent === "emerald"
-      ? "text-emerald-300"
+      ? "text-accent-emerald"
       : "text-app";
   return (
     <Panel className="p-5">

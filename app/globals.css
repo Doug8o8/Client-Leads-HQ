@@ -16,10 +16,56 @@ html {
 
 /* ====================================================================
    Theme tokens
-   Dark = command-center (default). Light = premium executive.
-   :root carries the dark defaults so SSR (pre-script) renders dark.
+   Light = premium executive (DEFAULT). Dark = command-center (toggle).
+   :root carries the LIGHT defaults so SSR (pre-script) renders light.
    ==================================================================== */
 :root,
+.theme-light {
+  /* Soft cool-ivory canvas with restrained gold + blue light. */
+  --app-bg:
+    radial-gradient(1200px 620px at 88% -10%, rgba(61, 139, 255, 0.10), transparent 58%),
+    radial-gradient(1000px 520px at -6% 2%, rgba(184, 146, 60, 0.09), transparent 56%),
+    linear-gradient(180deg, #f3f5fa 0%, #eef0f6 100%);
+  --text-strong: #14233f;
+  --text: #2a3852;
+  --text-muted: #586886;
+  --text-faint: #8a96ad;
+  --panel-bg: #ffffff;
+  --panel-border: #e3e7f1;
+  --panel-blur: none;
+  --line: #e6eaf3;
+  --surface-1: #f3f6fc;
+  --surface-1-hover: #e9eef8;
+  --surface-ring: #dee4f1;
+  --input-bg: #ffffff;
+  --input-border: #d6dcec;
+  --mobilebar-bg: rgba(241, 244, 250, 0.88);
+  --drawer-bg: #ffffff;
+  /* Accent text — tuned for contrast on light surfaces */
+  --accent-gold: #97751f;
+  --accent-blue: #2c66d6;
+  --accent-emerald: #1f7a4d;
+  /* Badge families: bg / fg / ring */
+  --badge-emerald-bg: #e6f2ea;
+  --badge-emerald-fg: #1f6e45;
+  --badge-emerald-ring: #cbe4d6;
+  --badge-blue-bg: #e8eefb;
+  --badge-blue-fg: #1f4fae;
+  --badge-blue-ring: #d2def6;
+  --badge-gold-bg: #f5eed9;
+  --badge-gold-fg: #856321;
+  --badge-gold-ring: #e7d8ad;
+  --badge-amber-bg: #f7edd8;
+  --badge-amber-fg: #8a5e1c;
+  --badge-amber-ring: #ecd7ab;
+  --badge-rose-bg: #f7e7e4;
+  --badge-rose-fg: #a23d36;
+  --badge-rose-ring: #eccbc6;
+  --badge-neutral-bg: #eef1f7;
+  --badge-neutral-fg: #5c6884;
+  --badge-neutral-ring: #dde2ee;
+}
+
 .theme-dark {
   --app-bg:
     radial-gradient(1200px 600px at 80% -10%, rgba(61, 139, 255, 0.12), transparent 60%),
@@ -40,28 +86,27 @@ html {
   --input-border: rgba(255, 255, 255, 0.1);
   --mobilebar-bg: rgba(7, 11, 22, 0.8);
   --drawer-bg: #0d1424;
-}
-
-.theme-light {
-  --app-bg:
-    radial-gradient(1100px 560px at 85% -8%, rgba(61, 139, 255, 0.08), transparent 60%),
-    radial-gradient(900px 460px at -5% 0%, rgba(184, 146, 60, 0.1), transparent 55%),
-    #f4f1e8;
-  --text-strong: #15233f;
-  --text: #2a3550;
-  --text-muted: #5c6781;
-  --text-faint: #8b93a7;
-  --panel-bg: #ffffff;
-  --panel-border: #e7e1d2;
-  --panel-blur: none;
-  --line: #e9e3d6;
-  --surface-1: #faf7ef;
-  --surface-1-hover: #f2ecde;
-  --surface-ring: #e7e1d2;
-  --input-bg: #ffffff;
-  --input-border: #ddd6c6;
-  --mobilebar-bg: rgba(244, 241, 232, 0.85);
-  --drawer-bg: #fffdf9;
+  --accent-gold: #d9bd7a;
+  --accent-blue: #6fa8ff;
+  --accent-emerald: #6ee7b7;
+  --badge-emerald-bg: rgba(52, 211, 153, 0.15);
+  --badge-emerald-fg: #6ee7b7;
+  --badge-emerald-ring: rgba(52, 211, 153, 0.30);
+  --badge-blue-bg: rgba(61, 139, 255, 0.15);
+  --badge-blue-fg: #6fa8ff;
+  --badge-blue-ring: rgba(61, 139, 255, 0.30);
+  --badge-gold-bg: rgba(201, 162, 75, 0.15);
+  --badge-gold-fg: #d9bd7a;
+  --badge-gold-ring: rgba(201, 162, 75, 0.30);
+  --badge-amber-bg: rgba(245, 158, 11, 0.12);
+  --badge-amber-fg: #fcd34d;
+  --badge-amber-ring: rgba(245, 158, 11, 0.28);
+  --badge-rose-bg: rgba(244, 63, 94, 0.12);
+  --badge-rose-fg: #fda4af;
+  --badge-rose-ring: rgba(244, 63, 94, 0.28);
+  --badge-neutral-bg: rgba(255, 255, 255, 0.05);
+  --badge-neutral-fg: #9aa6bd;
+  --badge-neutral-ring: rgba(255, 255, 255, 0.12);
 }
 
 /* ====================================================================
@@ -79,7 +124,10 @@ html {
 }
 
 .theme-light .app-panel {
-  box-shadow: 0 1px 2px rgba(20, 33, 61, 0.04), 0 10px 30px -16px rgba(20, 33, 61, 0.18);
+  box-shadow:
+    0 1px 2px rgba(20, 33, 61, 0.05),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 18px 40px -24px rgba(20, 33, 61, 0.22);
 }
 
 .hairline {
@@ -88,6 +136,49 @@ html {
 
 .text-app {
   color: var(--text-strong);
+}
+
+/* Theme-aware accent text (readable on both light and dark surfaces) */
+.text-accent-gold {
+  color: var(--accent-gold);
+}
+.text-accent-blue {
+  color: var(--accent-blue);
+}
+.text-accent-emerald {
+  color: var(--accent-emerald);
+}
+
+/* Theme-aware badge families (bg + fg + 1px ring via inset shadow) */
+.badge-emerald {
+  background-color: var(--badge-emerald-bg);
+  color: var(--badge-emerald-fg);
+  box-shadow: inset 0 0 0 1px var(--badge-emerald-ring);
+}
+.badge-blue {
+  background-color: var(--badge-blue-bg);
+  color: var(--badge-blue-fg);
+  box-shadow: inset 0 0 0 1px var(--badge-blue-ring);
+}
+.badge-gold {
+  background-color: var(--badge-gold-bg);
+  color: var(--badge-gold-fg);
+  box-shadow: inset 0 0 0 1px var(--badge-gold-ring);
+}
+.badge-amber {
+  background-color: var(--badge-amber-bg);
+  color: var(--badge-amber-fg);
+  box-shadow: inset 0 0 0 1px var(--badge-amber-ring);
+}
+.badge-rose {
+  background-color: var(--badge-rose-bg);
+  color: var(--badge-rose-fg);
+  box-shadow: inset 0 0 0 1px var(--badge-rose-ring);
+}
+.badge-neutral {
+  background-color: var(--badge-neutral-bg);
+  color: var(--badge-neutral-fg);
+  box-shadow: inset 0 0 0 1px var(--badge-neutral-ring);
 }
 
 .text-muted {

@@ -31,7 +31,7 @@ export function ScoreBreakdownBars({
             <span
               className={cn(
                 "w-12 shrink-0 text-right text-xs font-semibold tabular-nums",
-                isPenalty && value < 0 ? "text-rose-300" : "text-app"
+                isPenalty && value < 0 ? "text-[color:var(--badge-rose-fg)]" : "text-app"
               )}
             >
               {value > 0 && !isPenalty ? value : value}

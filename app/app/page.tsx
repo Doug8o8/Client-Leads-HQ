@@ -9,9 +9,9 @@ import { formatShortDate } from "@/lib/utils";
 
 const STATUS_STYLES: Record<string, string> = {
   Draft: "text-faint",
-  Researching: "text-electric-soft",
-  Ready: "text-emerald-300",
-  "Report sent": "text-gold-soft",
+  Researching: "text-accent-blue",
+  Ready: "text-accent-emerald",
+  "Report sent": "text-accent-gold",
 };
 
 export default function DashboardPage() {
@@ -73,7 +73,7 @@ function ProjectCard({ project }: { project: Project }) {
             <p className="text-xs font-medium uppercase tracking-wider text-faint">
               {project.business.businessName}
             </p>
-            <h3 className="mt-1 truncate text-lg font-semibold text-app group-hover:text-gold-soft">
+            <h3 className="mt-1 truncate text-lg font-semibold text-app group-hover:text-accent-gold">
               {project.name}
             </h3>
           </div>
@@ -120,7 +120,7 @@ function ProjectCard({ project }: { project: Project }) {
 function EmptyProjects() {
   return (
     <Panel className="flex flex-col items-center justify-center gap-4 p-14 text-center">
-      <div className="grid h-12 w-12 place-items-center rounded-2xl surface-1 ring-app text-gold-soft">
+      <div className="grid h-12 w-12 place-items-center rounded-2xl surface-1 ring-app text-accent-gold">
         <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d="M12 5v14M5 12h14" strokeLinecap="round" />
         </svg>

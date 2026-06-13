@@ -124,7 +124,7 @@ export function NewProjectWizard() {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-gold-soft">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-accent-gold">
           New prospecting project
         </p>
         <h1 className="text-2xl font-semibold tracking-tight text-app sm:text-3xl">
@@ -156,7 +156,7 @@ export function NewProjectWizard() {
                     state === "active"
                       ? "text-app"
                       : state === "done"
-                      ? "text-gold-soft"
+                      ? "text-accent-gold"
                       : "text-faint"
                   )}
                 >
@@ -241,7 +241,7 @@ export function NewProjectWizard() {
               />
             </Field>
 
-            <div className="rounded-xl border border-gold/20 bg-gold/5 p-4 text-sm text-gold-soft">
+            <div className="rounded-xl border border-gold/20 bg-gold/5 p-4 text-sm text-accent-gold">
               This project will be saved locally in your browser and seeded with
               a starter set of demo leads, so you can explore the full leads →
               report → export flow right away.

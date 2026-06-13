@@ -92,7 +92,7 @@ export default function LandingPage() {
         <section className="mt-24 grid gap-4 sm:grid-cols-2">
           {FEATURES.map((f, i) => (
             <div key={f.title} className="app-panel rounded-2xl p-6">
-              <span className="text-sm font-semibold text-gold-soft">
+              <span className="text-sm font-semibold text-accent-gold">
                 0{i + 1}
               </span>
               <h3 className="mt-3 text-xl font-semibold text-white">

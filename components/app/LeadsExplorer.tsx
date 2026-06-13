@@ -126,7 +126,7 @@ export function LeadsExplorer({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted">
           Showing <span className="font-semibold text-app">{filtered.length}</span> of {leads.length} leads ·{" "}
-          <span className="font-semibold text-emerald-300">{includedCount}</span> in report
+          <span className="font-semibold text-accent-emerald">{includedCount}</span> in report
         </p>
         <div className="flex gap-2">
           <ExportCsvButton
@@ -204,7 +204,7 @@ function LeadCard({ lead, onOpen, onToggle }: { lead: Lead; onOpen: () => void; 
     <Panel className="flex flex-col p-5">
       <div className="flex items-start justify-between gap-3">
         <button onClick={onOpen} className="min-w-0 text-left">
-          <p className="truncate font-semibold text-app hover:text-gold-soft">{lead.company}</p>
+          <p className="truncate font-semibold text-app hover:text-accent-gold">{lead.company}</p>
           <p className="mt-0.5 truncate text-xs text-muted">
             {lead.industry} · {lead.city}, {lead.state}
           </p>
@@ -224,7 +224,7 @@ function LeadCard({ lead, onOpen, onToggle }: { lead: Lead; onOpen: () => void; 
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t hairline pt-3">
-        <button onClick={onOpen} className="text-xs font-medium text-electric-soft hover:underline">
+        <button onClick={onOpen} className="text-xs font-medium text-accent-blue hover:underline">
           View audit →
         </button>
         <IncludeToggle included={lead.includedInReport} onToggle={onToggle} />
@@ -240,7 +240,7 @@ function IncludeToggle({ included, onToggle }: { included: boolean; onToggle: ()
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition ring-1",
         included
-          ? "bg-emerald-400/10 text-emerald-300 ring-emerald-400/30"
+          ? "bg-emerald-400/10 text-accent-emerald ring-emerald-400/30"
           : "surface-1 text-faint ring-app hover:text-muted"
       )}
     >
@@ -275,7 +275,7 @@ function LeadTable({
           {leads.map((lead) => (
             <tr key={lead.id} className="border-b hairline transition surface-1-hover">
               <td className="px-4 py-3">
-                <button onClick={() => onOpen(lead.id)} className="text-left font-medium text-app hover:text-gold-soft">
+                <button onClick={() => onOpen(lead.id)} className="text-left font-medium text-app hover:text-accent-gold">
                   {lead.company}
                 </button>
                 <p className="text-xs text-faint">
@@ -413,7 +413,7 @@ function LeadDrawer({ lead, onClose, onToggle }: { lead: Lead; onClose: () => vo
                     <ConfidenceChip confidence={ev.confidence} />
                   </div>
                   <p className="mt-1.5 text-sm text-muted">{ev.detail}</p>
-                  <a href={ev.sourceUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs text-electric-soft hover:underline">
+                  <a href={ev.sourceUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs text-accent-blue hover:underline">
                     {ev.sourceLabel} ↗
                   </a>
                 </Panel>
@@ -427,7 +427,7 @@ function LeadDrawer({ lead, onClose, onToggle }: { lead: Lead; onClose: () => vo
           {/* Outreach (editable) + risk */}
           <section className="grid gap-3">
             <div className="rounded-xl border border-electric/20 bg-electric/5 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-electric-soft">Outreach angle</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-accent-blue">Outreach angle</p>
               <textarea
                 value={lead.outreach.hook}
                 onChange={(e) => updateLead(lead.id, { outreach: { ...lead.outreach, hook: e.target.value } })}
@@ -437,7 +437,7 @@ function LeadDrawer({ lead, onClose, onToggle }: { lead: Lead; onClose: () => vo
               <p className="mt-2 text-xs text-muted">{lead.outreach.rationale}</p>
             </div>
             <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-amber-300">Risk notes</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[color:var(--badge-amber-fg)]">Risk notes</p>
               <p className="mt-1.5 text-sm text-muted">{lead.riskNotes}</p>
             </div>
           </section>

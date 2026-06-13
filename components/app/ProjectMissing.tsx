@@ -14,7 +14,7 @@ export function ProjectLoading() {
 export function ProjectMissing() {
   return (
     <Panel className="mx-auto mt-8 flex max-w-lg flex-col items-center gap-4 p-12 text-center">
-      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-gold-soft">
+      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-accent-gold">
         Not found
       </p>
       <h1 className="text-2xl font-semibold text-app">This project isn&apos;t here</h1>
