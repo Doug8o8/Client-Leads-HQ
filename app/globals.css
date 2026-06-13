@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: "Fraunces", "Playfair Display", Georgia, "Times New Roman",
+    serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ====================================================================
+   App (command-center) base
+   ==================================================================== */
+.app-shell {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(61, 139, 255, 0.12), transparent 60%),
+    radial-gradient(1000px 500px at 0% 0%, rgba(201, 162, 75, 0.08), transparent 55%),
+    #070b16;
+  color: #e7ecf5;
+}
+
+.app-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+.hairline {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.text-muted {
+  color: #9aa6bd;
+}
+
+.text-faint {
+  color: #6c7890;
+}
+
+/* Gold gradient text for accents */
+.text-gold-gradient {
+  background: linear-gradient(120deg, #e6cd92, #c9a24b 55%, #a9842f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ====================================================================
+   Report (ivory) theme — scoped to .report-root
+   ==================================================================== */
+.report-root {
+  --paper: #faf6ec;
+  --paper-panel: #fffdf8;
+  --paper-line: #e7dcc4;
+  --paper-line-soft: #efe7d4;
+  --navy: #16243f;
+  --navy-soft: #2b3a59;
+  --ink-2: #44506b;
+  --gold: #b8923c;
+  --gold-soft: #d8c189;
+  background-color: #ece4d2;
+  color: var(--navy);
+  font-family: var(--font-sans);
+}
+
+.report-page {
+  background-color: var(--paper);
+  color: var(--navy);
+}
+
+.report-serif {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+}
+
+.report-panel {
+  background: var(--paper-panel);
+  border: 1px solid var(--paper-line);
+  border-radius: 16px;
+}
+
+.report-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--paper-line) 12%,
+    var(--paper-line) 88%,
+    transparent
+  );
+}
+
+.report-kicker {
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.report-rule-gold {
+  height: 3px;
+  width: 64px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+}
+
+/* ====================================================================
+   Print — clean, premium PDF output
+   ==================================================================== */
+@media print {
+  @page {
+    margin: 14mm 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .report-root {
+    background: #ffffff !important;
+  }
+
+  .report-page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  /* Preserve background colors / accents in print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .page-break-before {
+    break-before: page;
+  }
+
+  .avoid-break,
+  .report-lead-card,
+  .report-stat-card,
+  table {
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+}
+
+/* Thin scrollbars for the dark app */
+.app-shell ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.app-shell ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+}
+.app-shell ::-webkit-scrollbar-track {
+  background: transparent;
+}
