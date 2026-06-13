@@ -21,11 +21,11 @@ html {
    ==================================================================== */
 :root,
 .theme-light {
-  /* Porcelain ivory canvas with a soft baby-blue + brass wash. */
+  /* Baby-blue canvas with a soft sky + brass wash. */
   --app-bg:
-    radial-gradient(1200px 640px at 88% -12%, rgba(74, 124, 214, 0.10), transparent 58%),
-    radial-gradient(1000px 540px at -6% 0%, rgba(176, 138, 58, 0.08), transparent 56%),
-    linear-gradient(180deg, #f6f8fc 0%, #eef2f9 100%);
+    radial-gradient(1200px 640px at 88% -12%, rgba(74, 124, 214, 0.12), transparent 58%),
+    radial-gradient(1000px 540px at -6% 0%, rgba(176, 138, 58, 0.07), transparent 56%),
+    linear-gradient(180deg, #dcecfb 0%, #cfe4f7 100%);
   --text-strong: #15233d;
   --text: #33405a;
   --text-muted: #5a6783;

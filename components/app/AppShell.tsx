@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
+import { getAppMode } from "@/lib/supabase/env";
 
 const NAV = [
   { href: "/app", label: "Dashboard", icon: "grid" },
@@ -44,6 +45,7 @@ function NavIcon({ name }: { name: string }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isSupabase = getAppMode() === "supabase";
 
   return (
     <div className="app-shell min-h-screen">
@@ -82,13 +84,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="app-panel rounded-2xl p-4">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                  <span
+                    className={cn(
+                      "absolute inline-flex h-full w-full animate-ping rounded-full",
+                      isSupabase ? "bg-sky-400/60" : "bg-emerald-400/60"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "relative inline-flex h-2 w-2 rounded-full",
+                      isSupabase ? "bg-sky-400" : "bg-emerald-400"
+                    )}
+                  />
                 </span>
-                <p className="text-xs font-semibold text-app">Demo Mode</p>
+                <p className="text-xs font-semibold text-app">
+                  {isSupabase ? "Supabase Mode" : "Demo Mode"}
+                </p>
               </div>
               <p className="mt-1.5 text-xs text-muted">
-                Saved locally in this browser. No account or API needed.
+                {isSupabase
+                  ? "Supabase connected. Cloud sync arrives in Phase 3B."
+                  : "Saved locally in this browser. No account or API needed."}
               </p>
             </div>
           </div>

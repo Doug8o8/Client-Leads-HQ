@@ -5,7 +5,8 @@
 - Next.js (App Router) · TypeScript · Tailwind CSS
 - React 19 · `next/font` (Inter + Fraunces, self-hosted at build — no external
   font requests at runtime)
-- No database, no env vars required for Phase 1.
+- Supabase (`@supabase/supabase-js`, `@supabase/ssr`) — **optional**. Without
+  env vars the app runs in Local Demo Mode (localStorage) with no backend.
 
 ## Run locally
 
@@ -59,15 +60,43 @@ Open a report → **Print / Save as PDF**. The print stylesheet (`app/globals.cs
 (`print-color-adjust: exact`), avoids breaking lead cards/tables across pages,
 and hides interactive chrome (`.no-print`). Tested for A4 and US Letter.
 
-## Phase 2 env (future)
+## Two run modes
 
-When Supabase is added, expect:
+The app detects its mode from env vars (`lib/supabase/env.ts`):
 
+| Mode | Trigger | Behavior |
+| --- | --- | --- |
+| **Local Demo Mode** | no Supabase env vars | localStorage persistence, no login, works offline. Default. |
+| **Supabase Mode** | both `NEXT_PUBLIC_SUPABASE_*` set | auth pages active; cloud data sync lands in Phase 3B. |
+
+### Local Demo Mode (default — nothing to configure)
+
+```bash
+npm install
+npm run dev
+# http://localhost:3000  — no env vars needed
 ```
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-```
 
-…plus provider keys for Places / web search / AI in later phases. None are
-required today.
+### Enable Supabase Mode
+
+1. Create a Supabase project, then apply the SQL in `supabase/migrations/`
+   (`0001_init.sql` then `0002_rls.sql`). See `supabase/README.md`.
+2. Copy `.env.example` → `.env.local` and fill in:
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=         # required — Project Settings → API
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=    # required — anon public key
+   SUPABASE_SERVICE_ROLE_KEY=        # optional — server-only seed/admin scripts
+   ```
+
+3. In Supabase **Authentication → URL Configuration**, add your site URL and
+   `…/auth/callback` to the redirect allow-list. Email + password is the default
+   auth method (you can disable "Confirm email" for frictionless local testing).
+4. Restart `npm run dev`. Visit `/auth/sign-up` to create an account; an
+   organization + profile are created automatically.
+
+On Vercel, set the same variables under **Project → Settings → Environment
+Variables**. Never expose `SUPABASE_SERVICE_ROLE_KEY` to the client.
+
+> **Phase 3B** swaps the `lib/store/` internals to read/write Supabase when in
+> Supabase Mode; until then the UI loads from localStorage in both modes.

@@ -1,9 +1,11 @@
 # Future API Workflows (placeholders)
 
 This document reserves space for the real lead-discovery and PDF/report-builder
-workflows. **Nothing here is implemented yet** — Phase 2A is local mock data
-only. The point is to capture how these workflows will connect to the current
-architecture so they can be dropped in without a rewrite.
+workflows. **Nothing here is implemented yet.** As of Phase 3A the app has a
+Supabase auth + schema foundation (see `docs/DATABASE_SCHEMA.md`), but lead data
+still comes from local mock data; these external workflows land in Phases 4–6.
+The point is to capture how they connect to the current architecture so they can
+be dropped in without a rewrite.
 
 ## How future workflows connect to the current app
 

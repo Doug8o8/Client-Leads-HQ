@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { PageHeader, Panel, Button } from "@/components/ui/primitives";
+import Link from "next/link";
+import { PageHeader, Panel, Button, ButtonLink } from "@/components/ui/primitives";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useDashboardStats } from "@/lib/store/useStore";
 import { resetDemo } from "@/lib/store/store";
 import { isStorageAvailable } from "@/lib/store/storage";
+import { getAppMode } from "@/lib/supabase/env";
+import { useSupabaseSession } from "@/lib/supabase/useSession";
 
 function SectionCard({
   label,
@@ -44,38 +47,128 @@ export default function SettingsPage() {
   const [confirming, setConfirming] = useState(false);
   const storageOk = typeof window !== "undefined" ? isStorageAvailable() : true;
 
+  const mode = getAppMode();
+  const isSupabase = mode === "supabase";
+  const { session, loading: sessionLoading } = useSupabaseSession();
+  const signedIn = Boolean(session);
+
   const doReset = () => {
     resetDemo();
     setConfirming(false);
     router.push("/app");
   };
 
+  const authStatus = !isSupabase
+    ? "Not required (demo)"
+    : sessionLoading
+    ? "Checking…"
+    : signedIn
+    ? `Signed in${session?.user?.email ? ` — ${session.user.email}` : ""}`
+    : "Signed out";
+
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
         kicker="Settings"
         title="Workspace"
-        subtitle="Everything here runs locally in your browser. No account, billing, or external services are connected."
+        subtitle={
+          isSupabase
+            ? "Connected to Supabase. Authentication is available; cloud data sync arrives in Phase 3B."
+            : "Everything here runs locally in your browser. No account, billing, or external services are connected."
+        }
       />
 
       {/* App mode banner */}
       <Panel className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/60" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            <span
+              className={`absolute inline-flex h-full w-full animate-ping rounded-full ${
+                isSupabase ? "bg-sky-400/60" : "bg-emerald-400/60"
+              }`}
+            />
+            <span
+              className={`relative inline-flex h-2.5 w-2.5 rounded-full ${
+                isSupabase ? "bg-sky-400" : "bg-emerald-400"
+              }`}
+            />
           </span>
           <div>
-            <p className="font-semibold text-app">Local Demo Mode</p>
+            <p className="font-semibold text-app">
+              {isSupabase ? "Supabase Mode" : "Local Demo Mode"}
+            </p>
             <p className="text-sm text-muted">
-              Projects, leads, edits, and notes are saved to this browser only.
+              {isSupabase
+                ? "Supabase is configured. Sign in to manage your account; data still loads from this browser until Phase 3B."
+                : "Projects, leads, edits, and notes are saved to this browser only."}
             </p>
           </div>
         </div>
-        <span className="badge-emerald inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold">
+        <span
+          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+            isSupabase ? "badge-blue" : "badge-emerald"
+          }`}
+        >
           Active
         </span>
       </Panel>
+
+      {/* App mode + connection */}
+      <SectionCard
+        label="System"
+        title="App mode & connection"
+        desc="How Client Leads HQ is running right now."
+      >
+        <div className="divide-y divide-[color:var(--line)]">
+          <Row
+            label="App mode"
+            value={isSupabase ? "Supabase Mode" : "Local Demo Mode"}
+            accent={isSupabase ? "text-accent-blue" : "text-accent-emerald"}
+          />
+          <Row
+            label="Supabase connection"
+            value={isSupabase ? "Configured" : "Not configured"}
+            accent={isSupabase ? "text-accent-emerald" : undefined}
+          />
+          <Row
+            label="Auth status"
+            value={authStatus}
+            accent={signedIn ? "text-accent-emerald" : undefined}
+          />
+          <Row
+            label="Browser localStorage"
+            value={storageOk ? "Available — data persists" : "Unavailable — in-memory only"}
+            accent={storageOk ? "text-accent-emerald" : "text-[color:var(--badge-amber-fg)]"}
+          />
+          <Row label="Storage key" value="clhq.store.v1" />
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          {isSupabase ? (
+            signedIn ? (
+              <form action="/auth/sign-out" method="post">
+                <Button type="submit" variant="secondary">
+                  Sign out
+                </Button>
+              </form>
+            ) : (
+              <ButtonLink href="/auth/sign-in" variant="secondary">
+                Sign in
+              </ButtonLink>
+            )
+          ) : (
+            <p className="text-xs text-faint">
+              Add Supabase env vars (see{" "}
+              <span className="font-medium text-muted">.env.example</span>) to enable
+              accounts. Auth pages still render at{" "}
+              <Link href="/auth/sign-in" className="font-medium text-accent-blue">
+                /auth/sign-in
+              </Link>
+              .
+            </p>
+          )}
+        </div>
+      </SectionCard>
 
       {/* Appearance */}
       <SectionCard
@@ -99,23 +192,6 @@ export default function SettingsPage() {
         </div>
       </SectionCard>
 
-      {/* Local storage status */}
-      <SectionCard
-        label="Storage"
-        title="Local storage status"
-        desc="Where this demo keeps your data between visits."
-      >
-        <div className="divide-y divide-[color:var(--line)]">
-          <Row
-            label="Browser localStorage"
-            value={storageOk ? "Available — data persists" : "Unavailable — in-memory only"}
-            accent={storageOk ? "text-accent-emerald" : "text-[color:var(--badge-amber-fg)]"}
-          />
-          <Row label="Storage key" value="clhq.store.v1" />
-          <Row label="Backend" value="None (Phase 2B)" />
-        </div>
-      </SectionCard>
-
       {/* Demo data */}
       <SectionCard
         label="Demo data"
@@ -134,7 +210,7 @@ export default function SettingsPage() {
           </div>
         ) : (
           <Button variant="secondary" onClick={() => setConfirming(true)}>
-            Reset demo data
+            Reset local demo data
           </Button>
         )}
       </SectionCard>
@@ -143,10 +219,14 @@ export default function SettingsPage() {
       <SectionCard
         label="Roadmap"
         title="Future workflows"
-        desc="Planned for later phases — not active in this demo."
+        desc="Planned for later phases — not active in this build."
       >
         <div className="grid gap-3 sm:grid-cols-2">
           {[
+            {
+              t: "Supabase data sync (Phase 3B)",
+              d: "Persist projects, leads, and reports to Postgres when signed in — RLS scoped to your org.",
+            },
             {
               t: "Lead discovery API",
               d: "Find real local businesses from your target + geography (Google Places / web search).",
@@ -158,10 +238,6 @@ export default function SettingsPage() {
             {
               t: "PDF report builder",
               d: "Generate a downloadable PDF of the report with saved version history.",
-            },
-            {
-              t: "Supabase + accounts",
-              d: "Cloud persistence, authentication, and team workspaces.",
             },
           ].map((f) => (
             <div key={f.t} className="surface-1 ring-app rounded-xl p-4">
@@ -176,8 +252,9 @@ export default function SettingsPage() {
           ))}
         </div>
         <p className="mt-4 text-xs text-faint">
-          See <span className="font-medium text-muted">docs/FUTURE_API_WORKFLOWS.md</span> for how
-          these connect to the current architecture.
+          See <span className="font-medium text-muted">docs/FUTURE_API_WORKFLOWS.md</span> and{" "}
+          <span className="font-medium text-muted">docs/BUILD_PHASES.md</span> for how these connect
+          to the current architecture.
         </p>
       </SectionCard>
     </div>
