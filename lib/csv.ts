@@ -55,7 +55,8 @@ export function leadsToCsv(leads: Lead[]): string {
       lead.verification,
       lead.outreach.hook,
       primarySource,
-      lead.riskNotes,
+      // Prefer the user's own note; fall back to the risk note.
+      lead.notes?.trim() ? lead.notes : lead.riskNotes,
     ]
       .map(escapeCell)
       .join(",");

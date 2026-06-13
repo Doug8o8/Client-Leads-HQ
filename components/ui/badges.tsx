@@ -50,7 +50,7 @@ const VERIFICATION_STYLES: Record<
   Verified: { ring: "bg-emerald-400/10 text-emerald-300 ring-emerald-400/30", dot: "bg-emerald-400" },
   Estimated: { ring: "bg-electric/10 text-electric-soft ring-electric/30", dot: "bg-electric" },
   Inferred: { ring: "bg-gold/10 text-gold-soft ring-gold/30", dot: "bg-gold" },
-  Unknown: { ring: "bg-white/5 text-faint ring-white/15", dot: "bg-slate-400" },
+  Unknown: { ring: "surface-1 text-faint ring-app", dot: "bg-slate-400" },
 };
 
 export function VerificationBadge({
@@ -117,7 +117,7 @@ export function Chip({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-muted",
+        "inline-flex items-center gap-1.5 rounded-full surface-1 ring-app px-2.5 py-1 text-xs text-muted",
         className
       )}
     >

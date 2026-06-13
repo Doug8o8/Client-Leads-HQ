@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -63,8 +64,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   className={cn(
                     "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
                     active
-                      ? "bg-white/10 text-white ring-1 ring-white/10"
-                      : "text-muted hover:bg-white/5 hover:text-white"
+                      ? "surface-1 text-app ring-app"
+                      : "text-muted surface-1-hover hover:text-app"
                   )}
                 >
                   <span className={cn(active ? "text-gold-soft" : "text-faint group-hover:text-muted")}>
@@ -76,20 +77,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="mt-auto app-panel rounded-2xl p-4">
-            <p className="text-xs font-semibold text-white">Demo workspace</p>
-            <p className="mt-1 text-xs text-muted">
-              Phase 1 runs on local mock data. No accounts or APIs required.
-            </p>
+          <div className="mt-auto flex flex-col gap-3">
+            <ThemeToggle />
+            <div className="app-panel rounded-2xl p-4">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                </span>
+                <p className="text-xs font-semibold text-app">Demo Mode</p>
+              </div>
+              <p className="mt-1.5 text-xs text-muted">
+                Saved locally in this browser. No account or API needed.
+              </p>
+            </div>
           </div>
         </aside>
 
         {/* Main */}
         <div className="min-w-0 flex-1">
           {/* Mobile top bar */}
-          <header className="sticky top-0 z-20 flex items-center justify-between border-b hairline bg-ink-950/80 px-4 py-3 backdrop-blur lg:hidden">
+          <header
+            className="sticky top-0 z-20 flex items-center justify-between border-b hairline px-4 py-3 backdrop-blur lg:hidden"
+            style={{ backgroundColor: "var(--mobilebar-bg)" }}
+          >
             <Logo compact />
             <nav className="flex items-center gap-1">
+              <ThemeToggle compact />
               {NAV.map((item) => {
                 const active =
                   item.href === "/app"
@@ -101,7 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     href={item.href}
                     className={cn(
                       "grid h-9 w-9 place-items-center rounded-lg",
-                      active ? "bg-white/10 text-gold-soft" : "text-muted"
+                      active ? "surface-1 text-gold-soft" : "text-muted"
                     )}
                   >
                     <NavIcon name={item.icon} />

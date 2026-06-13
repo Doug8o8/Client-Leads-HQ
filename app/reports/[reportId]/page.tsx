@@ -1,7 +1,9 @@
-import { notFound } from "next/navigation";
-import { getProject, getLeads } from "@/lib/data";
+"use client";
+
+import { use, useState } from "react";
 import { VERIFICATION_DEFINITIONS, SCORE_LABEL_BANDS, isStrongLead } from "@/lib/scoring";
 import type { ScoreLabel, VerificationStatus } from "@/lib/types";
+import { useHydrated, useProject, useProjectLeads } from "@/lib/store/useStore";
 import { formatDate, prettyUrl } from "@/lib/utils";
 import { ReportToolbar } from "@/components/report/ReportToolbar";
 import {
@@ -15,24 +17,31 @@ import {
   ReportVerificationDonut,
 } from "@/components/report/ReportCharts";
 import { ReportLeadCard } from "@/components/report/ReportLeadCard";
+import { ReportNotFound, ReportLoading } from "@/components/report/ReportStates";
 
-export default async function ReportPage({
+export default function ReportPage({
   params,
 }: {
   params: Promise<{ reportId: string }>;
 }) {
-  const { reportId } = await params;
-  const project = getProject(reportId);
-  if (!project) notFound();
+  const { reportId } = use(params);
+  const hydrated = useHydrated();
+  const project = useProject(reportId);
+  const allLeads = useProjectLeads(reportId);
+  // Stable generation timestamp for this view (client-only render).
+  const [generatedAt] = useState(() => new Date().toISOString());
 
-  const allLeads = getLeads(reportId);
+  // Read from localStorage only after mount to keep print output clean and
+  // avoid SSR/client mismatches against per-browser saved state.
+  if (!hydrated) return <ReportLoading />;
+  if (!project) return <ReportNotFound />;
+
   const leads = allLeads.filter((l) => l.includedInReport);
 
   const total = leads.length;
   const avg = total ? Math.round(leads.reduce((s, l) => s + l.score, 0) / total) : 0;
   const strong = leads.filter((l) => isStrongLead(l.score)).length;
   const verified = leads.filter((l) => l.verification === "Verified").length;
-  const generatedAt = new Date().toISOString();
 
   const scoreDistribution = SCORE_LABEL_BANDS.map((b) => ({
     label: b.label as ScoreLabel,

@@ -44,7 +44,7 @@ with no API keys required.
 
 ## Architecture guardrails
 
-- Data access goes through `lib/data.ts` so a real backend can be swapped in
+- Data access goes through `lib/store/` (Phase 2A) so a real backend can be swapped in
   without touching UI.
 - Types live in `lib/types.ts`; scoring in `lib/scoring.ts`; CSV in `lib/csv.ts`;
   mock data isolated in `lib/mock-data.ts`.

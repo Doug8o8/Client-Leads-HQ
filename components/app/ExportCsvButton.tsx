@@ -2,6 +2,7 @@
 
 import type { Lead } from "@/lib/types";
 import { downloadCsv, leadsToCsv } from "@/lib/csv";
+import { recordExport } from "@/lib/store/store";
 import { Button } from "@/components/ui/primitives";
 
 export function ExportCsvButton({
@@ -18,7 +19,11 @@ export function ExportCsvButton({
   return (
     <Button
       variant={variant}
-      onClick={() => downloadCsv(filename, leadsToCsv(leads))}
+      disabled={leads.length === 0}
+      onClick={() => {
+        downloadCsv(filename, leadsToCsv(leads));
+        recordExport();
+      }}
     >
       <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
         <path d="M12 3v12m0 0 4-4m-4 4-4-4" strokeLinecap="round" strokeLinejoin="round" />

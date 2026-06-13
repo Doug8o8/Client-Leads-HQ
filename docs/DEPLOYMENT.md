@@ -46,6 +46,12 @@ npm run lint       # eslint .
 Sample data ships with project id **`proj_lonestar`**, so
 `/reports/proj_lonestar` renders the full demo report.
 
+> **Phase 2A note:** project/lead state is persisted per-browser in
+> `localStorage` (seeded from the mock data on first load), so the project pages
+> and report read their data on the client. New projects created in the wizard
+> exist only in the browser that created them. No server env or database is
+> required. Phase 3 swaps `lib/store/` internals for Supabase.
+
 ## Printing the report to PDF
 
 Open a report → **Print / Save as PDF**. The print stylesheet (`app/globals.css`,

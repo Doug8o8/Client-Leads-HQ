@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Panel } from "@/components/ui/primitives";
+import { createProject } from "@/lib/store/store";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
@@ -59,7 +60,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-sm font-medium text-white">{label}</span>
+      <span className="text-sm font-medium text-app">{label}</span>
       {hint && <span className="mt-0.5 block text-xs text-faint">{hint}</span>}
       <div className="mt-2">{children}</div>
     </label>
@@ -67,7 +68,14 @@ function Field({
 }
 
 const inputCls =
-  "w-full rounded-xl border border-white/10 bg-ink-900/60 px-3.5 py-2.5 text-sm text-white placeholder:text-faint outline-none transition focus:border-electric/50 focus:ring-2 focus:ring-electric/20";
+  "app-input w-full rounded-xl px-3.5 py-2.5 text-sm transition";
+
+function toList(value: string): string[] {
+  return value
+    .split(/[,\n]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
 
 export function NewProjectWizard() {
   const router = useRouter();
@@ -83,9 +91,34 @@ export function NewProjectWizard() {
 
   const finish = () => {
     setSubmitting(true);
-    // Phase 1: no persistence. Route to the seeded demo project so the
-    // full downstream workflow (leads → report → CSV) is explorable.
-    setTimeout(() => router.push("/app/projects/proj_lonestar"), 400);
+    // Persist the project locally and route to its command center.
+    // It's seeded with a starter set of demo leads so the full workflow
+    // (leads → report → CSV) is immediately explorable.
+    const id = createProject({
+      business: {
+        businessName: form.businessName,
+        website: form.website,
+        industry: form.industry,
+        location: form.location,
+      },
+      target: {
+        description: form.targetDescription,
+        idealIndustries: toList(form.idealIndustries),
+        companySize: form.companySize,
+        geography: form.geography,
+      },
+      signals: {
+        idealSignals: toList(form.idealSignals),
+        badFitSignals: toList(form.badFitSignals),
+        services: toList(form.services),
+      },
+      report: {
+        reportName: form.reportName,
+        goal: form.goal,
+        leadsDesired: form.leadsDesired,
+      },
+    });
+    router.push(`/app/projects/${id}`);
   };
 
   return (
@@ -94,7 +127,7 @@ export function NewProjectWizard() {
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-gold-soft">
           New prospecting project
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+        <h1 className="text-2xl font-semibold tracking-tight text-app sm:text-3xl">
           Set up your research
         </h1>
         <p className="mt-2 text-sm text-muted">
@@ -113,7 +146,7 @@ export function NewProjectWizard() {
               <div
                 className={cn(
                   "h-1 rounded-full",
-                  state === "todo" ? "bg-white/10" : "bg-gold-soft"
+                  state === "todo" ? "bg-[color:var(--line)]" : "bg-gold-soft"
                 )}
               />
               <div>
@@ -121,7 +154,7 @@ export function NewProjectWizard() {
                   className={cn(
                     "text-xs font-semibold",
                     state === "active"
-                      ? "text-white"
+                      ? "text-app"
                       : state === "done"
                       ? "text-gold-soft"
                       : "text-faint"
@@ -209,9 +242,9 @@ export function NewProjectWizard() {
             </Field>
 
             <div className="rounded-xl border border-gold/20 bg-gold/5 p-4 text-sm text-gold-soft">
-              Demo note: Phase 1 doesn&apos;t persist new projects yet. Finishing
-              opens the pre-built sample project so you can explore the full
-              leads → report → export flow.
+              This project will be saved locally in your browser and seeded with
+              a starter set of demo leads, so you can explore the full leads →
+              report → export flow right away.
             </div>
           </div>
         )}

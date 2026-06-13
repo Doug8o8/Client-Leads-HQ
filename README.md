@@ -36,6 +36,31 @@ Then explore:
 npm run dev | build | start | typecheck | lint
 ```
 
+## Local demo persistence (Phase 2A)
+
+The app is fully interactive on localhost with **no backend** — state is saved
+in your browser via `localStorage`:
+
+- On first load, the store seeds itself from the mock data (the Texas
+  life-insurance scenario).
+- Creating a project, toggling leads in/out of the report, changing a lead's
+  review status, editing the outreach angle, and writing notes all **persist**.
+- The report and CSV export always reflect your current included leads.
+- **Settings → Reset demo data** restores the original seed and clears your
+  local edits.
+- If `localStorage` is unavailable (private mode, etc.), the app degrades
+  gracefully to in-memory state for the session.
+
+The persistence layer lives in `lib/store/` and is intentionally isolated so its
+internals can be swapped for Supabase in Phase 3 without touching the UI.
+
+## Light & dark themes
+
+A dark command-center theme (default) and a light executive theme are available
+via the toggle in the sidebar (and Settings). Styling is CSS-variable driven, so
+themes recolor the chrome cleanly. The **report is always ivory** — the
+reference for the premium light direction.
+
 ## Project structure
 
 ```
@@ -44,14 +69,21 @@ components/
   app/               # command-center UI (shell, charts, leads explorer, wizard)
   report/            # ivory report UI (cover, charts, lead cards, primitives)
   ui/                # shared primitives (badges, buttons, panels)
+  ThemeToggle.tsx    # dark/light theme switch
 lib/
   types.ts           # data models (Supabase-ready)
   scoring.ts         # reusable 0–100 scoring logic + label/verification defs
+  aggregates.ts      # pure derivation helpers (distributions, dashboard stats)
   csv.ts             # reusable CSV export utility
-  mock-data.ts       # isolated demo data (clearly marked)
-  data.ts            # data-access seam (swap for a backend later)
+  theme.ts           # theme tokens + no-flash apply
+  mock-data.ts       # isolated demo seed data (clearly marked)
+  store/             # local persistence seam (swap for Supabase later)
+    persisted.ts     #   persisted shape + seed + id/slug helpers
+    storage.ts       #   safe localStorage access
+    store.ts         #   store singleton + mutations (createProject, updateLead…)
+    useStore.ts      #   React hooks (useSyncExternalStore)
 docs/                # PRODUCT_SPEC, MVP_SCOPE, DATABASE_SCHEMA, LEAD_SCORING,
-                     # BUILD_PHASES, DEPLOYMENT
+                     # BUILD_PHASES, DEPLOYMENT, FUTURE_API_WORKFLOWS
 ```
 
 ## The trust principle

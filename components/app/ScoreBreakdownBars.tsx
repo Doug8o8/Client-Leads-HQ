@@ -19,7 +19,7 @@ export function ScoreBreakdownBars({
         return (
           <div key={dim.key} className="flex items-center gap-3">
             <span className="w-28 shrink-0 text-xs text-muted">{dim.label}</span>
-            <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/5">
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-[color:var(--line)]">
               <div
                 className={cn(
                   "h-full rounded-full",
@@ -31,7 +31,7 @@ export function ScoreBreakdownBars({
             <span
               className={cn(
                 "w-12 shrink-0 text-right text-xs font-semibold tabular-nums",
-                isPenalty && value < 0 ? "text-rose-300" : "text-white"
+                isPenalty && value < 0 ? "text-rose-300" : "text-app"
               )}
             >
               {value > 0 && !isPenalty ? value : value}

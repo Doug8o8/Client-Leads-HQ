@@ -144,7 +144,13 @@ export interface Lead {
   outreach: OutreachAngle;
   riskNotes: string;
   includedInReport: boolean;
+  // User-editable, persisted locally (Phase 2A).
+  status: LeadStatus;
+  notes: string;
 }
+
+// Lightweight review state — intentionally not a CRM pipeline.
+export type LeadStatus = "Open" | "Approved" | "Passed";
 
 // ---------------------------------------------------------------------
 // Report & Export (generated artifacts)

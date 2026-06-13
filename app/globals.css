@@ -15,32 +15,112 @@ html {
 }
 
 /* ====================================================================
-   App (command-center) base
+   Theme tokens
+   Dark = command-center (default). Light = premium executive.
+   :root carries the dark defaults so SSR (pre-script) renders dark.
    ==================================================================== */
-.app-shell {
-  background:
+:root,
+.theme-dark {
+  --app-bg:
     radial-gradient(1200px 600px at 80% -10%, rgba(61, 139, 255, 0.12), transparent 60%),
     radial-gradient(1000px 500px at 0% 0%, rgba(201, 162, 75, 0.08), transparent 55%),
     #070b16;
-  color: #e7ecf5;
+  --text-strong: #ffffff;
+  --text: #e7ecf5;
+  --text-muted: #9aa6bd;
+  --text-faint: #6c7890;
+  --panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-blur: blur(6px);
+  --line: rgba(255, 255, 255, 0.08);
+  --surface-1: rgba(255, 255, 255, 0.05);
+  --surface-1-hover: rgba(255, 255, 255, 0.1);
+  --surface-ring: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(11, 17, 32, 0.6);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --mobilebar-bg: rgba(7, 11, 22, 0.8);
+  --drawer-bg: #0d1424;
+}
+
+.theme-light {
+  --app-bg:
+    radial-gradient(1100px 560px at 85% -8%, rgba(61, 139, 255, 0.08), transparent 60%),
+    radial-gradient(900px 460px at -5% 0%, rgba(184, 146, 60, 0.1), transparent 55%),
+    #f4f1e8;
+  --text-strong: #15233f;
+  --text: #2a3550;
+  --text-muted: #5c6781;
+  --text-faint: #8b93a7;
+  --panel-bg: #ffffff;
+  --panel-border: #e7e1d2;
+  --panel-blur: none;
+  --line: #e9e3d6;
+  --surface-1: #faf7ef;
+  --surface-1-hover: #f2ecde;
+  --surface-ring: #e7e1d2;
+  --input-bg: #ffffff;
+  --input-border: #ddd6c6;
+  --mobilebar-bg: rgba(244, 241, 232, 0.85);
+  --drawer-bg: #fffdf9;
+}
+
+/* ====================================================================
+   App (command-center) base — token driven
+   ==================================================================== */
+.app-shell {
+  background: var(--app-bg);
+  color: var(--text);
 }
 
 .app-panel {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(6px);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: var(--panel-blur);
+}
+
+.theme-light .app-panel {
+  box-shadow: 0 1px 2px rgba(20, 33, 61, 0.04), 0 10px 30px -16px rgba(20, 33, 61, 0.18);
 }
 
 .hairline {
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--line);
+}
+
+.text-app {
+  color: var(--text-strong);
 }
 
 .text-muted {
-  color: #9aa6bd;
+  color: var(--text-muted);
 }
 
 .text-faint {
-  color: #6c7890;
+  color: var(--text-faint);
+}
+
+/* Token-driven surfaces (replace hardcoded white/alpha utilities) */
+.surface-1 {
+  background-color: var(--surface-1);
+}
+.surface-1-hover:hover {
+  background-color: var(--surface-1-hover);
+}
+.ring-app {
+  box-shadow: inset 0 0 0 1px var(--surface-ring);
+}
+
+.app-input {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-strong);
+}
+.app-input::placeholder {
+  color: var(--text-faint);
+}
+.app-input:focus {
+  outline: none;
+  border-color: rgba(61, 139, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(61, 139, 255, 0.2);
 }
 
 /* Gold gradient text for accents */

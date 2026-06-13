@@ -34,7 +34,7 @@ export function PageHeader({
             {kicker}
           </p>
         )}
-        <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+        <h1 className="text-2xl font-semibold tracking-tight text-app sm:text-3xl">
           {title}
         </h1>
         {subtitle && (
@@ -64,7 +64,7 @@ export function StatCard({
       ? "text-electric-soft"
       : accent === "emerald"
       ? "text-emerald-300"
-      : "text-white";
+      : "text-app";
   return (
     <Panel className="p-5">
       <p className="text-xs font-medium uppercase tracking-wider text-faint">
@@ -84,9 +84,8 @@ const BUTTON_STYLES: Record<ButtonVariant, string> = {
   primary:
     "bg-electric text-white hover:bg-electric-soft shadow-[0_10px_30px_-10px_rgba(61,139,255,0.7)]",
   gold: "bg-gradient-to-br from-gold-soft to-gold-deep text-ink-950 hover:brightness-105 shadow-[0_10px_30px_-10px_rgba(201,162,75,0.7)]",
-  secondary:
-    "bg-white/5 text-white ring-1 ring-white/12 hover:bg-white/10",
-  ghost: "text-muted hover:text-white hover:bg-white/5",
+  secondary: "surface-1 text-app ring-app surface-1-hover",
+  ghost: "text-muted hover:text-app surface-1-hover",
 };
 
 const BUTTON_BASE =

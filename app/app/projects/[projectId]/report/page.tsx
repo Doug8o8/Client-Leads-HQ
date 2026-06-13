@@ -1,44 +1,44 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getProject, getProjectAggregates, getLeads } from "@/lib/data";
+import { use } from "react";
+import { useHydrated, useProject, useProjectAggregates, useProjectLeads } from "@/lib/store/useStore";
 import { ButtonLink, PageHeader, Panel, StatCard } from "@/components/ui/primitives";
 import { ScorePill, VerificationBadge } from "@/components/ui/badges";
 import { ExportCsvButton } from "@/components/app/ExportCsvButton";
+import { ProjectMissing, ProjectLoading } from "@/components/app/ProjectMissing";
 
-export default async function ReportBuilderPage({
+export default function ReportBuilderPage({
   params,
 }: {
   params: Promise<{ projectId: string }>;
 }) {
-  const { projectId } = await params;
-  const project = getProject(projectId);
-  if (!project) notFound();
+  const { projectId } = use(params);
+  const hydrated = useHydrated();
+  const project = useProject(projectId);
+  const agg = useProjectAggregates(projectId);
+  const leads = useProjectLeads(projectId);
 
-  const agg = getProjectAggregates(projectId);
-  const leads = getLeads(projectId);
+  if (!hydrated) return <ProjectLoading />;
+  if (!project) return <ProjectMissing />;
+
   const included = leads.filter((l) => l.includedInReport);
   const excluded = leads.filter((l) => !l.includedInReport);
 
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <Link
-          href={`/app/projects/${projectId}`}
-          className="text-sm text-muted hover:text-white"
-        >
+        <Link href={`/app/projects/${projectId}`} className="text-sm text-muted hover:text-app">
           ← {project.name}
         </Link>
         <div className="mt-3">
           <PageHeader
             kicker="Report builder"
             title={project.report.reportName}
-            subtitle="Review what ships. Generate the polished HTML report or export the shortlist as CSV."
+            subtitle="Review what ships. Generate the polished HTML report or export the shortlist as CSV. Your selections are saved automatically."
             actions={
               <>
-                <ExportCsvButton
-                  leads={included}
-                  filename={`${project.report.reportName}.csv`}
-                />
+                <ExportCsvButton leads={included} filename={`${project.report.reportName}.csv`} />
                 <ButtonLink href={`/reports/${projectId}`} variant="gold" target="_blank">
                   Generate report ↗
                 </ButtonLink>
@@ -60,35 +60,47 @@ export default async function ReportBuilderPage({
         {/* Included */}
         <Panel className="p-6">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-white">
+            <h2 className="font-semibold text-app">
               Included <span className="text-faint">({included.length})</span>
             </h2>
             <span className="text-xs text-emerald-300">Ships in report</span>
           </div>
-          <div className="mt-4 flex flex-col divide-y divide-white/5">
-            {included.map((lead) => (
-              <Link
-                key={lead.id}
-                href={`/app/projects/${projectId}/leads?lead=${lead.id}`}
-                className="flex items-center justify-between gap-3 py-3 first:pt-0"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-white">{lead.company}</p>
-                  <p className="truncate text-xs text-faint">{lead.city}, {lead.state}</p>
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <VerificationBadge status={lead.verification} />
-                  <ScorePill score={lead.score} label={lead.scoreLabel} />
-                </div>
-              </Link>
-            ))}
-          </div>
+          {included.length === 0 ? (
+            <p className="mt-4 text-sm text-muted">
+              No leads included yet. Add leads from the{" "}
+              <Link href={`/app/projects/${projectId}/leads`} className="text-electric-soft hover:underline">
+                lead review
+              </Link>{" "}
+              screen.
+            </p>
+          ) : (
+            <div className="mt-4 flex flex-col divide-y divide-[color:var(--line)]">
+              {included.map((lead) => (
+                <Link
+                  key={lead.id}
+                  href={`/app/projects/${projectId}/leads?lead=${lead.id}`}
+                  className="flex items-center justify-between gap-3 py-3 first:pt-0"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-app">{lead.company}</p>
+                    <p className="truncate text-xs text-faint">
+                      {lead.city}, {lead.state}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <VerificationBadge status={lead.verification} />
+                    <ScorePill score={lead.score} label={lead.scoreLabel} />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </Panel>
 
         {/* Excluded */}
         <Panel className="p-6">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-white">
+            <h2 className="font-semibold text-app">
               Excluded <span className="text-faint">({excluded.length})</span>
             </h2>
             <span className="text-xs text-faint">Held back</span>
@@ -96,7 +108,7 @@ export default async function ReportBuilderPage({
           {excluded.length === 0 ? (
             <p className="mt-4 text-sm text-muted">Nothing excluded.</p>
           ) : (
-            <div className="mt-4 flex flex-col divide-y divide-white/5">
+            <div className="mt-4 flex flex-col divide-y divide-[color:var(--line)]">
               {excluded.map((lead) => (
                 <Link
                   key={lead.id}
@@ -125,11 +137,11 @@ export default async function ReportBuilderPage({
       {/* Generate CTA */}
       <Panel className="flex flex-col items-start gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-lg">
-          <h2 className="text-xl font-semibold text-white">Your prospecting report is ready</h2>
+          <h2 className="text-xl font-semibold text-app">Your prospecting report is ready</h2>
           <p className="mt-2 text-sm text-muted">
-            A premium, print-ready HTML report for {project.business.businessName} —
-            cover, executive summary, methodology, visual stats, lead cards, and a
-            CSV-style appendix.
+            A premium, print-ready HTML report for {project.business.businessName} — cover, executive
+            summary, methodology, visual stats, lead cards, and a CSV-style appendix. It reflects your
+            current {included.length} included {included.length === 1 ? "lead" : "leads"}.
           </p>
         </div>
         <ButtonLink href={`/reports/${projectId}`} variant="gold" target="_blank" className="shrink-0 px-5 py-3 text-base">

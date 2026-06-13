@@ -1,28 +1,34 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getProject, getProjectAggregates, getLeads } from "@/lib/data";
+import { use } from "react";
+import { useHydrated, useProject, useProjectAggregates, useProjectLeads } from "@/lib/store/useStore";
 import { ButtonLink, PageHeader, Panel, StatCard } from "@/components/ui/primitives";
 import { ScoreDistribution, VerificationBreakdown } from "@/components/app/Charts";
 import { ScorePill, VerificationBadge, Chip } from "@/components/ui/badges";
 import { ExportCsvButton } from "@/components/app/ExportCsvButton";
+import { ProjectMissing, ProjectLoading } from "@/components/app/ProjectMissing";
 
-export default async function ProjectCommandCenter({
+export default function ProjectCommandCenter({
   params,
 }: {
   params: Promise<{ projectId: string }>;
 }) {
-  const { projectId } = await params;
-  const project = getProject(projectId);
-  if (!project) notFound();
+  const { projectId } = use(params);
+  const hydrated = useHydrated();
+  const project = useProject(projectId);
+  const agg = useProjectAggregates(projectId);
+  const leads = useProjectLeads(projectId);
 
-  const agg = getProjectAggregates(projectId);
-  const leads = getLeads(projectId);
+  if (!hydrated) return <ProjectLoading />;
+  if (!project) return <ProjectMissing />;
+
   const included = leads.filter((l) => l.includedInReport);
 
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <Link href="/app" className="text-sm text-muted hover:text-white">
+        <Link href="/app" className="text-sm text-muted hover:text-app">
           ← Dashboard
         </Link>
         <div className="mt-3">
@@ -62,31 +68,39 @@ export default async function ProjectCommandCenter({
             <p className="text-xs font-medium text-faint">Target customer</p>
             <p className="mt-1.5 text-sm text-muted">{project.target.description}</p>
             <div className="mt-3 flex flex-wrap gap-1.5">
-              <Chip>{project.target.companySize}</Chip>
-              <Chip>{project.target.geography}</Chip>
+              {project.target.companySize && <Chip>{project.target.companySize}</Chip>}
+              {project.target.geography && <Chip>{project.target.geography}</Chip>}
             </div>
           </div>
           <div>
             <p className="text-xs font-medium text-faint">Ideal signals</p>
-            <ul className="mt-1.5 space-y-1">
-              {project.signals.idealSignals.slice(0, 5).map((s) => (
-                <li key={s} className="flex gap-2 text-sm text-muted">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
-                  {s}
-                </li>
-              ))}
-            </ul>
+            {project.signals.idealSignals.length === 0 ? (
+              <p className="mt-1.5 text-sm text-faint">None specified.</p>
+            ) : (
+              <ul className="mt-1.5 space-y-1">
+                {project.signals.idealSignals.slice(0, 5).map((s) => (
+                  <li key={s} className="flex gap-2 text-sm text-muted">
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div>
             <p className="text-xs font-medium text-faint">Bad-fit signals</p>
-            <ul className="mt-1.5 space-y-1">
-              {project.signals.badFitSignals.slice(0, 5).map((s) => (
-                <li key={s} className="flex gap-2 text-sm text-muted">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-rose-400" />
-                  {s}
-                </li>
-              ))}
-            </ul>
+            {project.signals.badFitSignals.length === 0 ? (
+              <p className="mt-1.5 text-sm text-faint">None specified.</p>
+            ) : (
+              <ul className="mt-1.5 space-y-1">
+                {project.signals.badFitSignals.slice(0, 5).map((s) => (
+                  <li key={s} className="flex gap-2 text-sm text-muted">
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-rose-400" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       </Panel>
@@ -118,44 +132,50 @@ export default async function ProjectCommandCenter({
       {/* Strongest leads */}
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Strongest leads</h2>
+          <h2 className="text-lg font-semibold text-app">Strongest leads</h2>
           <Link
             href={`/app/projects/${projectId}/leads`}
-            className="text-sm text-muted hover:text-white"
+            className="text-sm text-muted hover:text-app"
           >
             View all {agg.totalLeads} →
           </Link>
         </div>
-        <div className="grid gap-3">
-          {agg.strongest.map((lead) => (
-            <Link key={lead.id} href={`/app/projects/${projectId}/leads?lead=${lead.id}`}>
-              <Panel className="flex flex-col gap-3 p-5 transition hover:ring-white/20 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                  <p className="truncate font-semibold text-white">{lead.company}</p>
-                  <p className="mt-0.5 truncate text-sm text-muted">
-                    {lead.industry} · {lead.city}, {lead.state}
-                  </p>
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <VerificationBadge status={lead.verification} />
-                  <ScorePill score={lead.score} label={lead.scoreLabel} />
-                </div>
-              </Panel>
-            </Link>
-          ))}
-        </div>
+        {agg.strongest.length === 0 ? (
+          <Panel className="p-6 text-sm text-muted">
+            No strong leads (score 70+) yet in this project.
+          </Panel>
+        ) : (
+          <div className="grid gap-3">
+            {agg.strongest.map((lead) => (
+              <Link key={lead.id} href={`/app/projects/${projectId}/leads?lead=${lead.id}`}>
+                <Panel className="flex flex-col gap-3 p-5 transition hover:ring-app sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-app">{lead.company}</p>
+                    <p className="mt-0.5 truncate text-sm text-muted">
+                      {lead.industry} · {lead.city}, {lead.state}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <VerificationBadge status={lead.verification} />
+                    <ScorePill score={lead.score} label={lead.scoreLabel} />
+                  </div>
+                </Panel>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Removed / weak */}
       {agg.removed.length > 0 && (
         <section>
-          <h2 className="mb-4 text-lg font-semibold text-white">
+          <h2 className="mb-4 text-lg font-semibold text-app">
             Removed from report{" "}
             <span className="text-sm font-normal text-faint">
               ({agg.removed.length})
             </span>
           </h2>
-          <Panel className="divide-y divide-white/5">
+          <Panel className="divide-y divide-[color:var(--line)]">
             {agg.removed.map((lead) => (
               <div key={lead.id} className="flex items-center justify-between gap-3 p-4">
                 <div className="min-w-0">
@@ -172,7 +192,7 @@ export default async function ProjectCommandCenter({
       {/* Actions footer */}
       <Panel className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-semibold text-white">Ready to ship?</p>
+          <p className="font-semibold text-app">Ready to ship?</p>
           <p className="text-sm text-muted">
             {included.length} leads are included in the report.
           </p>

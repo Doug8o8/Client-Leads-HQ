@@ -22,13 +22,13 @@ export function ScoreDistribution({
           <span className="w-20 shrink-0 text-xs font-medium text-muted">
             {d.label}
           </span>
-          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white/5">
+          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[color:var(--line)]">
             <div
               className={cn("h-full rounded-full", SCORE_BAR[d.label])}
               style={{ width: `${(d.count / max) * 100}%` }}
             />
           </div>
-          <span className="w-6 shrink-0 text-right text-xs font-semibold tabular-nums text-white">
+          <span className="w-6 shrink-0 text-right text-xs font-semibold tabular-nums text-app">
             {d.count}
           </span>
         </div>
@@ -52,7 +52,7 @@ export function VerificationBreakdown({
   const total = Math.max(1, data.reduce((s, d) => s + d.count, 0));
   return (
     <div>
-      <div className="flex h-3 w-full overflow-hidden rounded-full bg-white/5">
+      <div className="flex h-3 w-full overflow-hidden rounded-full bg-[color:var(--line)]">
         {data.map((d) =>
           d.count === 0 ? null : (
             <div
@@ -69,7 +69,7 @@ export function VerificationBreakdown({
           <div key={d.status} className="flex items-center gap-2">
             <span className={cn("h-2 w-2 rounded-full", VERIF_BAR[d.status])} />
             <span className="text-xs text-muted">{d.status}</span>
-            <span className="ml-auto text-xs font-semibold tabular-nums text-white">
+            <span className="ml-auto text-xs font-semibold tabular-nums text-app">
               {d.count}
             </span>
           </div>

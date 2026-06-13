@@ -103,7 +103,10 @@ export const PROJECTS: Project[] = [
 // Lead authoring helper — keeps each entry compact and consistent.
 // Score is DERIVED from the breakdown so the math always ties out.
 // ---------------------------------------------------------------------
-type RawLead = Omit<Lead, "id" | "projectId" | "score" | "scoreLabel"> & {
+type RawLead = Omit<
+  Lead,
+  "id" | "projectId" | "score" | "scoreLabel" | "status" | "notes"
+> & {
   breakdown: ScoreBreakdown;
 };
 
@@ -115,6 +118,9 @@ function buildLead(projectId: string, index: number, raw: RawLead): Lead {
     projectId,
     score,
     scoreLabel: labelForScore(score),
+    // Default review state — overridden once the user interacts (persisted).
+    status: raw.includedInReport ? "Approved" : "Open",
+    notes: "",
   };
 }
 

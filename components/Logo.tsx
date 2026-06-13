@@ -20,7 +20,7 @@ export function Logo({
       </span>
       {!compact && (
         <span className="flex flex-col leading-none">
-          <span className="text-[15px] font-semibold tracking-tight text-white">
+          <span className="text-[15px] font-semibold tracking-tight text-app">
             Client Leads HQ
           </span>
           <span className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.2em] text-faint">

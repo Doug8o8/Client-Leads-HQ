@@ -69,6 +69,8 @@ projects      1───* exports
 | outreach | jsonb | `{ hook, rationale }` |
 | risk_notes | text | |
 | included_in_report | bool | |
+| status | text | `Open` \| `Approved` \| `Passed` (user review state) |
+| notes | text | user's private note (persisted) |
 
 ### lead_evidence
 | column | type | notes |
