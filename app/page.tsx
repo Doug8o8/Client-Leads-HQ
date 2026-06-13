@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { ButtonLink } from "@/components/ui/primitives";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const FEATURES = [
   {
@@ -23,16 +24,17 @@ const FEATURES = [
 
 export default function LandingPage() {
   return (
-    <div className="theme-dark app-shell min-h-screen">
+    <div className="app-shell min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
         <Logo />
         <nav className="flex items-center gap-2">
           <Link
             href="/reports/proj_lonestar"
-            className="hidden rounded-xl px-4 py-2.5 text-sm font-medium text-muted transition hover:text-white sm:inline-flex"
+            className="hidden rounded-xl px-4 py-2.5 text-sm font-medium text-muted transition hover:text-app sm:inline-flex"
           >
             View sample report
           </Link>
+          <ThemeToggle compact />
           <ButtonLink href="/app" variant="secondary">
             Open the app
           </ButtonLink>
@@ -42,16 +44,16 @@ export default function LandingPage() {
       <main className="mx-auto max-w-6xl px-5">
         {/* Hero */}
         <section className="relative pt-12 sm:pt-20">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-muted">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold-soft" />
+          <span className="surface-1 ring-app inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium text-muted">
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--accent-gold)" }} />
             AI-powered local prospecting command center
           </span>
-          <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
+          <h1 className="font-editorial mt-6 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-app sm:text-6xl">
             Find better local business leads.{" "}
             <span className="text-gold-gradient">Score them. Verify them.</span>{" "}
             Turn them into polished reports.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted">
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
             Client Leads HQ is the research command center for service
             businesses. Go from a target customer description to a verified,
             scored shortlist — and a consulting-grade prospecting report — in one
@@ -77,11 +79,8 @@ export default function LandingPage() {
               ["CSV", "One-click export"],
               ["Print", "PDF-ready reports"],
             ].map(([big, small]) => (
-              <div
-                key={small}
-                className="app-panel rounded-2xl px-4 py-5"
-              >
-                <p className="text-2xl font-semibold text-white">{big}</p>
+              <div key={small} className="app-panel rounded-2xl px-4 py-5">
+                <p className="font-editorial text-2xl font-semibold text-app">{big}</p>
                 <p className="mt-1 text-xs text-muted">{small}</p>
               </div>
             ))}
@@ -89,30 +88,30 @@ export default function LandingPage() {
         </section>
 
         {/* Features */}
-        <section className="mt-24 grid gap-4 sm:grid-cols-2">
-          {FEATURES.map((f, i) => (
-            <div key={f.title} className="app-panel rounded-2xl p-6">
-              <span className="text-sm font-semibold text-accent-gold">
-                0{i + 1}
-              </span>
-              <h3 className="mt-3 text-xl font-semibold text-white">
-                {f.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
-                {f.body}
-              </p>
-            </div>
-          ))}
+        <section className="mt-24">
+          <p className="editorial-label">How it works</p>
+          <div className="rule-gold mt-3" />
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {FEATURES.map((f, i) => (
+              <div key={f.title} className="app-panel rounded-2xl p-6">
+                <span className="font-editorial text-sm font-semibold text-accent-gold">
+                  0{i + 1}
+                </span>
+                <h3 className="mt-3 text-xl font-semibold text-app">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{f.body}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* Trust strip */}
         <section className="mt-20 app-panel rounded-3xl p-8 sm:p-12">
           <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-xl">
-              <h2 className="text-2xl font-semibold text-white">
+              <h2 className="font-editorial text-2xl font-semibold text-app">
                 Never pitch on a guess you thought was a fact.
               </h2>
-              <p className="mt-3 text-sm text-muted">
+              <p className="mt-3 text-sm leading-relaxed text-muted">
                 The whole product is built around one trust principle: confirmed
                 facts, estimates, and AI inferences are always visibly different.
                 Your reputation is on the line — the data should earn it.
@@ -126,7 +125,7 @@ export default function LandingPage() {
 
         <footer className="mt-20 border-t hairline py-10 text-sm text-faint">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p>Client Leads HQ — CLHQ · Phase 1 demo (mock data)</p>
+            <p>Client Leads HQ — CLHQ · Local demo (mock data)</p>
             <p>Find better local business leads.</p>
           </div>
         </footer>

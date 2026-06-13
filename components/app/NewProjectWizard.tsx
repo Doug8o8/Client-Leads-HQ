@@ -124,10 +124,8 @@ export function NewProjectWizard() {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-accent-gold">
-          New prospecting project
-        </p>
-        <h1 className="text-2xl font-semibold tracking-tight text-app sm:text-3xl">
+        <p className="editorial-label mb-2.5">New prospecting project</p>
+        <h1 className="font-editorial text-[28px] font-semibold leading-tight text-app sm:text-[34px]">
           Set up your research
         </h1>
         <p className="mt-2 text-sm text-muted">

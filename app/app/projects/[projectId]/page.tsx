@@ -60,7 +60,7 @@ export default function ProjectCommandCenter({
 
       {/* Project brief */}
       <Panel className="p-6">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-faint">
+        <h2 className="card-label">
           Project brief
         </h2>
         <div className="mt-4 grid gap-6 md:grid-cols-3">
@@ -108,7 +108,7 @@ export default function ProjectCommandCenter({
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel className="p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-faint">
+          <h2 className="card-label">
             Lead score distribution
           </h2>
           <div className="mt-5">
@@ -116,7 +116,7 @@ export default function ProjectCommandCenter({
           </div>
         </Panel>
         <Panel className="p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-faint">
+          <h2 className="card-label">
             Verification mix
           </h2>
           <div className="mt-5">

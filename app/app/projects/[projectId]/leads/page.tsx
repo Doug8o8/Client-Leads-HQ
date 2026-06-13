@@ -30,7 +30,7 @@ export default function LeadsPage({
         >
           ← {project.name}
         </Link>
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-app sm:text-3xl">
+        <h1 className="font-editorial mt-3 text-[28px] font-semibold leading-tight text-app sm:text-[34px]">
           Lead review
         </h1>
         <p className="mt-2 text-sm text-muted">

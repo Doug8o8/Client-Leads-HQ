@@ -29,16 +29,12 @@ export function PageHeader({
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        {kicker && (
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.22em] text-accent-gold">
-            {kicker}
-          </p>
-        )}
-        <h1 className="text-2xl font-semibold tracking-tight text-app sm:text-3xl">
+        {kicker && <p className="editorial-label mb-2.5">{kicker}</p>}
+        <h1 className="font-editorial text-[28px] font-semibold leading-tight text-app sm:text-[34px]">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-2 max-w-2xl text-sm text-muted">{subtitle}</p>
+          <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-muted">{subtitle}</p>
         )}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}

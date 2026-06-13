@@ -220,7 +220,14 @@ function LeadCard({ lead, onOpen, onToggle }: { lead: Lead; onOpen: () => void; 
           <span className={cn("h-1.5 w-1.5 rounded-full", STATUS_DOT[lead.status])} />
           {lead.status}
         </Chip>
-        {lead.notes.trim() !== "" && <Chip>📝 Note</Chip>}
+        {lead.notes.trim() !== "" && (
+          <Chip>
+            <svg className="h-3 w-3 text-accent-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <path d="M4 5h16M4 12h16M4 19h10" strokeLinecap="round" />
+            </svg>
+            Note
+          </Chip>
+        )}
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t hairline pt-3">
@@ -343,23 +350,70 @@ function LeadDrawer({ lead, onClose, onToggle }: { lead: Lead; onClose: () => vo
             <IncludeToggle included={lead.includedInReport} onToggle={onToggle} />
           </div>
 
-          {/* Review status (persisted) */}
-          <section>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-faint">Review status</p>
-            <div className="surface-1 ring-app inline-flex rounded-xl p-1">
-              {STATUSES.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => updateLead(lead.id, { status: s })}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition",
-                    lead.status === s ? "surface-1 text-app ring-app" : "text-faint hover:text-muted"
-                  )}
-                >
-                  <span className={cn("h-1.5 w-1.5 rounded-full", STATUS_DOT[s])} />
-                  {s}
-                </button>
-              ))}
+          {/* Your workspace — the editable, persisted controls, up top */}
+          <section className="app-panel rounded-2xl p-5">
+            <div className="flex items-center justify-between">
+              <h3 className="card-label">Your workspace</h3>
+              <span className="inline-flex items-center gap-1 text-[11px] text-accent-emerald">
+                <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <path d="M20 6 9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Saved locally
+              </span>
+            </div>
+
+            {/* Review status */}
+            <div className="mt-4">
+              <p className="card-label mb-2">Review status</p>
+              <div className="surface-1 ring-app inline-flex rounded-xl p-1">
+                {STATUSES.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => updateLead(lead.id, { status: s })}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition",
+                      lead.status === s ? "surface-1 text-app ring-app" : "text-faint hover:text-muted"
+                    )}
+                  >
+                    <span className={cn("h-1.5 w-1.5 rounded-full", STATUS_DOT[s])} />
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Outreach angle (editable) */}
+            <div className="mt-5">
+              <div className="mb-2 flex items-center gap-1.5">
+                <PencilIcon />
+                <p className="card-label">Outreach angle</p>
+              </div>
+              <textarea
+                value={lead.outreach.hook}
+                onChange={(e) => updateLead(lead.id, { outreach: { ...lead.outreach, hook: e.target.value } })}
+                rows={2}
+                className="app-input w-full rounded-lg px-3 py-2 text-sm"
+                placeholder="How would you open this conversation?"
+              />
+              <p className="mt-1.5 text-xs text-muted">{lead.outreach.rationale}</p>
+            </div>
+
+            {/* Private notes (editable) */}
+            <div className="mt-5">
+              <div className="mb-2 flex items-center gap-1.5">
+                <PencilIcon />
+                <p className="card-label">Private notes</p>
+              </div>
+              <textarea
+                value={lead.notes}
+                onChange={(e) => updateLead(lead.id, { notes: e.target.value })}
+                rows={3}
+                placeholder="Add a private note for this lead…"
+                className="app-input w-full rounded-lg px-3 py-2.5 text-sm"
+              />
+              <p className="mt-1.5 text-[11px] text-faint">
+                Notes save automatically to this browser and appear in your CSV export.
+              </p>
             </div>
           </section>
 
@@ -424,35 +478,15 @@ function LeadDrawer({ lead, onClose, onToggle }: { lead: Lead; onClose: () => vo
             </p>
           </section>
 
-          {/* Outreach (editable) + risk */}
-          <section className="grid gap-3">
-            <div className="rounded-xl border border-electric/20 bg-electric/5 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-accent-blue">Outreach angle</p>
-              <textarea
-                value={lead.outreach.hook}
-                onChange={(e) => updateLead(lead.id, { outreach: { ...lead.outreach, hook: e.target.value } })}
-                rows={2}
-                className="app-input mt-2 w-full rounded-lg px-3 py-2 text-sm"
-              />
-              <p className="mt-2 text-xs text-muted">{lead.outreach.rationale}</p>
-            </div>
-            <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[color:var(--badge-amber-fg)]">Risk notes</p>
+          {/* Risk notes (read-only) */}
+          <section>
+            <div
+              className="rounded-xl p-4"
+              style={{ backgroundColor: "var(--badge-amber-bg)", boxShadow: "inset 0 0 0 1px var(--badge-amber-ring)" }}
+            >
+              <p className="card-label" style={{ color: "var(--badge-amber-fg)" }}>Risk notes</p>
               <p className="mt-1.5 text-sm text-muted">{lead.riskNotes}</p>
             </div>
-          </section>
-
-          {/* Private notes (persisted) */}
-          <section>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-faint">Your notes</p>
-            <textarea
-              value={lead.notes}
-              onChange={(e) => updateLead(lead.id, { notes: e.target.value })}
-              rows={3}
-              placeholder="Add a private note for this lead…"
-              className="app-input w-full rounded-xl px-3 py-2.5 text-sm"
-            />
-            <p className="mt-1 text-[11px] text-faint">Saved automatically to this browser.</p>
           </section>
         </div>
 
@@ -469,6 +503,15 @@ function LeadDrawer({ lead, onClose, onToggle }: { lead: Lead; onClose: () => vo
         </div>
       </div>
     </div>
+  );
+}
+
+function PencilIcon() {
+  return (
+    <svg className="h-3.5 w-3.5 text-accent-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 20h9" strokeLinecap="round" />
+      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
